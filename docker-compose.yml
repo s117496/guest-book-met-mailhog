@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  reverse-proxy:
+    image: traefik:v3.4.0-rc2
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./static.yml:/etc/traefik/traefik.yaml
+      - ./dynamic.yml:/etc/traefik/dynamicconf/conf.yaml
+  db:
+    image: mariadb:latest
+    volumes:
+      - d2mariadbdata:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: my-secret-pw
+  guestbook:
+    build: .
+    environment:
+      - DBUSER=root
+      - DBPASSWORD=my-secret-pw
+    depends_on:
+      - db
+  mailhog:
+    ports:
+      - "587:587"
+      - "8025:8025"
+    image: 42bv/mailhog:latest
+volumes:
+  d2mariadbdata: ~

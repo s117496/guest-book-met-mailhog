@@ -1,0 +1,11 @@
+http:
+  routers:
+    to-guestbook:
+      rule: "Host(`guestbook.localhost`)"
+      service: guestbook
+      entrypoints: web
+  services:
+    guestbook:
+      loadBalancer:
+        servers:
+          - url: http://guestbook
